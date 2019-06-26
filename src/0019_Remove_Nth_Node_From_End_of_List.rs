@@ -31,7 +31,7 @@ impl Solution {
             for _ in 0..steps {
                 cur = cur.unwrap().next.as_mut();
             }
-            let next = cur.as_mut().unwrap().next.as_mut().unwrap().next.take();
+            let next = cur.as_mut().unwrap().next.as_mut().unwrap().next.clone();
             cur.as_mut().unwrap().next = next;
         }
         dummy.unwrap().next
