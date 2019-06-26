@@ -42,7 +42,7 @@ pub struct Solution;
 
 fn vec_to_list(v: &Vec<i32>) -> Option<Box<ListNode>> {
     let mut head = None;
-    for i in v {
+    for i in v.iter().rev() {
         let mut node = ListNode::new(*i);
         node.next = head;
         head = Some(Box::new(node));

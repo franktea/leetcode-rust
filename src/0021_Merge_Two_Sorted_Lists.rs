@@ -33,21 +33,21 @@ impl Solution {
             tail.as_mut().unwrap().next = Some(Box::new(node));
             tail = &mut(tail.as_mut().unwrap().next);
         }
+
+        // 将链表节点ln后面的所有节点复制到tail的后面
+        let f = |mut ln: &Option<Box<ListNode>>, mut tail: &mut Option<Box<ListNode>>| {
+	        while ln.is_some() {
+		        let node = ListNode::new(ln.as_ref().unwrap().val);
+                tail.as_mut().unwrap().next = Some(Box::new(node));
+                tail = &mut(tail.as_mut().unwrap().next);
+                ln = &(ln.as_ref().unwrap().next);
+            }
+        };     
         
         if cur1.is_some() {
-            while cur1.is_some() {
-                let node = ListNode::new(cur1.as_ref().unwrap().val);
-                tail.as_mut().unwrap().next = Some(Box::new(node));
-                tail = &mut(tail.as_mut().unwrap().next);
-                cur1 = &(cur1.as_ref().unwrap().next);
-            }
+            f(cur1, tail);
         } else if cur2.is_some() {
-            while cur2.is_some() {
-                let node = ListNode::new(cur2.as_ref().unwrap().val);
-                tail.as_mut().unwrap().next = Some(Box::new(node));
-                tail = &mut(tail.as_mut().unwrap().next);
-                cur2 = &(cur2.as_ref().unwrap().next);
-            }
+            f(cur2, tail);
         }
         
         dummy.unwrap().next
@@ -58,7 +58,7 @@ pub struct Solution;
 
 fn vec_to_list(v: &Vec<i32>) -> Option<Box<ListNode>> {
     let mut head = None;
-    for i in v {
+    for i in v.iter().rev() {
         let mut node = ListNode::new(*i);
         node.next = head;
         head = Some(Box::new(node));
@@ -75,7 +75,7 @@ fn display(l: Option<Box<ListNode>>) {
 }
 
 fn main() {
-    let l = Solution::merge_two_lists(vec_to_list(&vec![9, 7, 5, 3, 1]), 
-        vec_to_list(&vec![10, 8, 6, 4, 2]));
+    let l = Solution::merge_two_lists(vec_to_list(&vec![1, 3, 5, 7, 9]), 
+        vec_to_list(&vec![2, 4, 6, 8, 10]));
     display(l);
 }
