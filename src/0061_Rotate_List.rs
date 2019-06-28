@@ -49,7 +49,7 @@ impl Solution {
             return head;
         }
         
-        let mut cur2 = head;
+        let mut cur2 = head;  // 移动语义
         let mut cur = &mut cur2;
         // 找到倒数第n个节点
         for _ in 0..(len-steps-1) {
