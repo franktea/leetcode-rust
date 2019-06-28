@@ -49,40 +49,29 @@ impl Solution {
             return head;
         }
         
-        let mut tail = &head;
-        for _ in 0..steps {
-            tail = &(tail.as_ref().unwrap().next);
-        }
-        let mut first = &head;
-        while tail.as_ref().unwrap().next.is_some() {
-            tail = &(tail.as_ref().unwrap().next);
-            first = &(first.as_ref().unwrap().next);
+        let head2 = head;
+        let mut cur2 = head2;
+        let mut cur = &mut cur2;
+        for _ in 0..(len-steps-1) {
+            cur = &mut(cur.as_mut().unwrap().next);
+            println!("cur {}", cur.as_ref().unwrap().val);
         }
         
-        // 实在编不过，暂时先把数据存到vector中再生成新的vector
-        let mut v = Vec::new();
-        {
-            let mut cur = &(first.as_ref().unwrap().next);
-            while cur.is_some() {
-                v.push(cur.as_ref().unwrap().val);
-                cur = &(cur.as_ref().unwrap().next);
-            }
-            
-            let mut cur = &head;
-            while cur.as_ref().unwrap() != first.as_ref().unwrap().next.as_ref().unwrap() {
-                v.push(cur.as_ref().unwrap().val);
-                cur = &(cur.as_ref().unwrap().next);
-            }
+        let mut new_head = cur.as_mut().unwrap().next.take();
+        let mut cur = &mut new_head;
+        while cur.as_ref().unwrap().next.is_some() {
+            cur = &mut(cur.as_mut().unwrap().next);
         }
+        cur.as_mut().unwrap().next = cur2;
         
-        vec_to_list(&v)
+        new_head
     }
 }
 
 pub struct Solution;
 
 fn main() {
-    let l = vec_to_list(&vec![1, 2]);
+    let l = vec_to_list(&vec![1, 2, 3, 4, 5]);
     let l2 = Solution::rotate_right(l, 1);
     println!("{:?}", l2);
 }
