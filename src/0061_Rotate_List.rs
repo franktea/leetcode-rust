@@ -49,20 +49,20 @@ impl Solution {
             return head;
         }
         
-        let head2 = head;
-        let mut cur2 = head2;
+        let mut cur2 = head;
         let mut cur = &mut cur2;
+        // 找到倒数第n个节点
         for _ in 0..(len-steps-1) {
             cur = &mut(cur.as_mut().unwrap().next);
-            println!("cur {}", cur.as_ref().unwrap().val);
         }
         
-        let mut new_head = cur.as_mut().unwrap().next.take();
+        let mut new_head = cur.as_mut().unwrap().next.take(); // 断开
         let mut cur = &mut new_head;
+        // 找到尾节点
         while cur.as_ref().unwrap().next.is_some() {
             cur = &mut(cur.as_mut().unwrap().next);
         }
-        cur.as_mut().unwrap().next = cur2;
+        cur.as_mut().unwrap().next = cur2; // 尾节点指向原来的头结点
         
         new_head
     }
