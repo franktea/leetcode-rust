@@ -1,8 +1,9 @@
 impl Solution {
     pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
+        let mut m = m;
         let mut index:usize = 0;
         for i in 0..(n as usize) {
-            while nums1[index] <= nums2[i] {
+            while (index < m as usize) && nums1[index] <= nums2[i] {
                 index += 1;
             }
             
@@ -10,6 +11,7 @@ impl Solution {
                 for j in (index+1..nums1.len()).rev() {
                     nums1[j] = nums1[j-1];
                 }
+                m += 1;
             }
             nums1[index] = nums2[i];
             index += 1;
