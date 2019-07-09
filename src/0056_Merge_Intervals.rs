@@ -35,7 +35,7 @@ impl Solution {
         
         let mut points: Vec<&Item> = map.values().collect();
         points.sort_by(|x, y| x.value.cmp(&y.value));
-        println!("{:?}", &points);
+        //println!("{:?}", &points);
                
         let mut ret = Vec::new();
         if points.is_empty() {
@@ -61,7 +61,9 @@ impl Solution {
                 if max > end {
                     end = max;
                 }
-            } else { // item.ends is not empty
+            }
+             
+            if !item.ends.is_empty() { // item.ends is not empty
                 if item.value == end {
                     ret.push(vec![start, end]);
                     status = 0;
