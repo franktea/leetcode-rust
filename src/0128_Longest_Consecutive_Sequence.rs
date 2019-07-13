@@ -9,7 +9,7 @@ impl Solution {
         let mut set: HashSet<i32> = nums.iter().map(|x| *x).collect();
         while !set.is_empty() {
             let mut v = 1;
-            let n = set.iter().nth(0).unwrap().clone();
+            let n = set.iter().nth(0).unwrap().clone(); // get the first element and remove it
             set.remove(&n);
             let mut less = n - 1;
             while !set.is_empty() && set.contains(&less) {
