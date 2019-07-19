@@ -1,21 +1,20 @@
 impl Solution {
     pub fn fraction_to_decimal(numerator: i32, denominator: i32) -> String {
-        let mut numerator = numerator as i64;
-        let mut denominator = denominator as i64;
-        let mut negtive = false;
-        if numerator * denominator < 0 {
-            negtive = true;
-        }
-        if numerator < 0 {
-            numerator = -numerator;
-        }
-        if denominator < 0 {
-            denominator = -denominator;
-        }
-        let ret = numerator / denominator;
+        let numerator = numerator as i64;
+        let denominator = denominator as i64;
+        let negtive = numerator * denominator < 0;
+        let numerator = numerator.abs();
+        let denominator = denominator.abs();
+ 
+        let ret = numerator / denominator; // 整数部分
         let mut left = numerator % denominator;
         if left == 0 {
-            return ret.to_string();
+            let mut s = "".to_string();
+            if negtive {
+                s.push_str(&"-".to_string());
+            }
+            s.push_str(&ret.to_string());
+            return s;
         }
         
         // 小数部分自己模拟竖式运算
@@ -28,6 +27,7 @@ impl Solution {
         fn check(left: i64, ret: i64, negtive: bool,
             left_map: &HashMap<i64, usize>, decimals: &Vec<i64>) -> Option<String> {
             if let Some(index) = left_map.get(&left) {
+                //println!("{}, {:?}, {:?}", left, &left_map, &decimals);
                 let mut s = "".to_string();
                 if negtive {
                     s.push_str(&"-".to_string());
@@ -47,26 +47,14 @@ impl Solution {
         }
         
         loop {
-            while left < denominator {
-                left *= 10;
-                if let Some(s) = check(left, ret, negtive, &left_map, &decimals) {
-                    return s;
-                }
-                
-                if left < denominator {
-                    left_map.insert(left, decimals.len());
-                    decimals.push(0);
-                }
-            }
-            
-            let c = left / denominator;
-            left %= denominator;
+            left *= 10;
             if let Some(s) = check(left, ret, negtive, &left_map, &decimals) {
                 return s;
             }
             
             left_map.insert(left, decimals.len());
-            decimals.push(c);
+            decimals.push(left / denominator);
+            left %= denominator;
             if left == 0 {
                 break;
             }
@@ -88,6 +76,7 @@ impl Solution {
 pub struct Solution;
 
 fn main() {
+    println!("{:?}", Solution::fraction_to_decimal(1, 90));
     println!("{:?}", Solution::fraction_to_decimal(1, 2));
     println!("{:?}", Solution::fraction_to_decimal(2, 3));
     println!("{:?}", Solution::fraction_to_decimal(-2147483648, -1));
