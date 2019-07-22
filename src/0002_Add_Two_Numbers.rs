@@ -4,19 +4,10 @@ impl Solution {
         let mut l2 = l2;
         let mut head = None;
         
-        fn add_node(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
-            let mut n = ListNode::new(val);
-            n.next = head;
-            Some(Box::new(n))
-        }
-        
         let mut left = 0;
         
         loop {
-            if l1.is_none() && l2.is_none() {
-                if left > 0 {
-                   head = add_node(head, left);
-                }
+            if l1.is_none() && l2.is_none() && left == 0{
                 break; 
             }
             
@@ -29,10 +20,21 @@ impl Solution {
                 sum += n.val;
                 l2 = n.next;
             }
+            
             left = sum / 10;
-            head = add_node(head, sum % 10);
+            let mut node = ListNode::new(sum % 10);
+            node.next = head;
+            head = Some(Box::new(node));
         }
-        head
+        
+        // reverse the list
+        let mut tail = None;
+        while let Some(mut n) = head.take() {
+            head = n.next;
+            n.next = tail;
+            tail = Some(n);
+        }
+        tail
     }
 }
 
