@@ -3,24 +3,20 @@
 fn longest_of(i: usize, s: &[u8]) -> (usize, usize) {
     // 先检查奇数长度的字符串，中点只有一个，就是第i个字符
     let mut ret1 = (i, i);
-    {
-        for (f, t) in (0..=i).rev().zip(i..s.len()) {
-            if s[f] != s[t] {
-                break;
-            }
-            ret1 = (f, t);
+    for (f, t) in (0..=i).rev().zip(i..s.len()) {
+        if s[f] != s[t] {
+            break;
         }
+        ret1 = (f, t);
     }
     
     // 再检查偶数长度的字符串，中点有两个，此处指定为第i、i+1个
     let mut ret2 = (i, i);
-    {
-        for (f, t) in (0..=i).rev().zip(i+1..s.len()) {
-            if s[f] != s[t] {
-                break;
-            }
-            ret2 = (f, t);
+    for (f, t) in (0..=i).rev().zip(i+1..s.len()) {
+        if s[f] != s[t] {
+            break;
         }
+        ret2 = (f, t);
     }
     
     return if ret2.1 - ret2.0 > ret1.1 - ret1.0 { ret2 } else { ret1 };
@@ -44,6 +40,8 @@ impl Solution {
         return std::str::from_utf8(&s[range.0..=range.1]).unwrap().to_string();
     }
 }
+
+// end submission---------------
 
 pub struct Solution;
 
