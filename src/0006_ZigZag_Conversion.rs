@@ -1,13 +1,12 @@
 impl Solution {
     pub fn convert(s: String, num_rows: i32) -> String {
         let n = num_rows;
-        let v: Vec<_> = (0..n).collect::<Vec<_>>().into_iter()
-            .chain((1..=n-2).rev().collect::<Vec<_>>().into_iter())
-            .collect();
+        let it = (0..n).collect::<Vec<_>>().into_iter()
+            .chain((1..=n-2).rev().collect::<Vec<_>>().into_iter());
         
         let mut vr: Vec<Vec<char>> = vec![vec![]; n as usize];
-        for (c, i) in s.chars().zip(v.iter().cycle()) {
-            vr[*i as usize].push(c);    
+        for (c, i) in s.chars().zip(it.cycle()) {
+            vr[i as usize].push(c);    
         }
         
         vr.into_iter().flatten().collect()
