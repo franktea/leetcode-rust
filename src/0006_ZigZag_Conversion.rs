@@ -5,9 +5,7 @@ impl Solution {
             .chain((1..=n-2).rev().collect::<Vec<_>>().into_iter());
         
         let mut vr: Vec<Vec<char>> = vec![vec![]; n as usize];
-        for (c, i) in s.chars().zip(it.cycle()) {
-            vr[i as usize].push(c);    
-        }
+        s.chars().zip(it.cycle()).for_each(|(c, i)| vr[i as usize].push(c));
         
         vr.into_iter().flatten().collect()
     }
