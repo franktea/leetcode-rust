@@ -39,7 +39,7 @@ impl Solution {
     }
 }
 
-// end submition
+// end submission
 
 pub struct Solution;
 

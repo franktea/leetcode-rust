@@ -38,7 +38,7 @@ impl Solution {
     }
 }
 
-//end submition--------------
+//end submission--------------
 
 // Definition for singly-linked list.
 #[derive(PartialEq, Eq, Clone, Debug)]
