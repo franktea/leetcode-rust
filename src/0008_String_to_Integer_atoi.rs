@@ -1,6 +1,6 @@
 enum State {
     Init,
-    ExpectNumber,
+    ExpectNumber, // 已经碰到了+或者-，下一个字符必须是数字
     Number(i32),
 }
 
@@ -28,18 +28,10 @@ impl Solution {
                 '0'..='9' => {
                     let digit = c.to_digit(10).unwrap() as i32;
                     match state {
-                        State::Init | State::ExpectNumber => { state = State::Number(digit); }
-                        State::Number(n) => {
-                            let tmp = n.checked_mul(10);
-                            if tmp.is_none() {
-                                return if neg < 0 { std::i32::MIN } else { std::i32::MAX };
-                            }
-                            
-                            let tmp = tmp.unwrap().checked_add(digit);
-                            if tmp.is_none() {
-                                return if neg < 0 { std::i32::MIN } else { std::i32::MAX };                              
-                            }
-                            state = State::Number(tmp.unwrap());
+                        State::Init | State::ExpectNumber => state = State::Number(digit),
+                        State::Number(n) => match n.checked_mul(10).and_then(|x|x.checked_add(digit)) {
+                            Some(number) => state = State::Number(number),
+                            _ => return if neg < 0 {std::i32::MIN} else {std::i32::MAX},
                         }
                     }                    
                 }
