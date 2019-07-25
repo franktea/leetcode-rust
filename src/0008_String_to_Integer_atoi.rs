@@ -10,25 +10,21 @@ impl Solution {
         let mut neg = 1; // 正负符号，为1或-1，最后的结果乘此数即可
         for c in str.chars() {
             match c {
-                ' ' => {
-                    match state {
-                        State::Init => {}
-                        State::ExpectNumber => { return 0; }
-                        State::Number(n) => { return neg * n; }
-                    }
+                ' ' => match state {
+                    State::Init => {},
+                    State::ExpectNumber =>  return 0,
+                    State::Number(n) => return neg * n,
                 }
-                '+' | '-' => {
-                    match state {
-                        State::Init => {
-                            state = State::ExpectNumber;
-                            if c == '-' {
-                                neg = -1;
-                            }
+                '+' | '-' => match state {
+                    State::Init => {
+                        state = State::ExpectNumber;
+                        if c == '-' {
+                            neg = -1;
                         }
-                        State::ExpectNumber => { return 0; }
-                        State::Number(n) => { return neg * n; }
-                    }                   
-                }
+                    }
+                    State::ExpectNumber => return 0,
+                    State::Number(n) => return neg * n,
+                }                   
                 '0'..='9' => {
                     let digit = c.to_digit(10).unwrap() as i32;
                     match state {
@@ -47,18 +43,16 @@ impl Solution {
                         }
                     }                    
                 }
-                _ => {
-                    match state {
-                        State::Init | State::ExpectNumber => { return 0; }
-                        State::Number(n) => { return neg * n; }
-                    }                    
-                }
+                _ => match state {
+                    State::Init | State::ExpectNumber => return 0,
+                    State::Number(n) => return neg * n,
+                }                   
             }
         }
         
         match state {
-            State::Number(n) => { return neg * n; }
-            _ => { return 0; }
+            State::Number(n) => return neg * n,
+            _ => return 0,
         }
     }
 }
