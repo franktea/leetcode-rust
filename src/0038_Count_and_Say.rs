@@ -1,8 +1,7 @@
 impl Solution {
     pub fn count_and_say(n: i32) -> String {
         let mut s = "1".to_string();
-        let mut v:Vec<String> = vec![s.clone()];
-        for _ in 0..n {
+        for _ in 0..n-1 {
             let mut ret = "".to_string();
             let mut count = 0;
             let mut it = s.chars().peekable(); // use peekable to check next char
@@ -16,10 +15,9 @@ impl Solution {
                     }
                 }
             }
-            v.push(ret.clone());
             s = ret;
         }
-        v[n as usize - 1].clone()
+        s
     }
 }
 
