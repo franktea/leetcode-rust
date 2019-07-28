@@ -7,12 +7,14 @@ impl Solution {
         }
         
         for c in ransom_note.chars() {
-            if !map.contains_key(&c) {
-                return false;
-            }
-            map.entry(c).and_modify(|x| *x-=1);
-            if map.get(&c).unwrap() < &0 {
-                return false;
+            match map.get_mut(&c) {
+                Some(x) => {
+                    *x -= 1;
+                    if *x < 0 {
+                        return false;
+                    }
+                }
+                _ => return false,
             }
         }
         true
