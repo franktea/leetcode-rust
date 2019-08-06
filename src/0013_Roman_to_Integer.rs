@@ -12,15 +12,10 @@ impl Solution {
         let mut ret = 0;
         let mut it = s.chars().peekable();
         while let Some(c) = it.next() {
-            if let Some(n) = it.peek() {
-                let v = map.get(&c).unwrap();
-                if v < map.get(n).unwrap() {
-                    ret -= v;
-                } else {
-                    ret += v;
-                }
-            } else {
-                ret += map.get(&c).unwrap();
+            let v = map.get(&c).unwrap();
+            match it.peek() {
+                Some(n) if v < map.get(n).unwrap() => ret -= v,
+                _ => ret += v,
             }
         }
         ret
