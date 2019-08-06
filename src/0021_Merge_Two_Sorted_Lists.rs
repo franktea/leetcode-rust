@@ -1,3 +1,31 @@
+// 参考了这里：
+// https://leetcode.com/problems/merge-two-sorted-lists/discuss/212315/Rust-solution-%22why-it's-so-damn-hard-to-implement%22
+impl Solution {
+    pub fn merge_two_lists(l1: Option<Box<ListNode>>, l2: Option<Box<ListNode>>) 
+        -> Option<Box<ListNode>> {
+        match (l1, l2) {
+            (Some(v1), None) => Some(v1),
+            (None, Some(v2)) => Some(v2),
+            (Some(mut v1), Some(mut v2)) => {
+                if v1.val < v2.val {
+                    let n = v1.next.take();
+                    v1.next = Solution::merge_two_lists(n, Some(v2));
+                    Some(v1)
+                } else {
+                    let n = v2.next.take();
+                    v2.next = Solution::merge_two_lists(Some(v1), n);
+                    Some(v2)
+                }
+            }
+            _ => None,
+        }
+    }
+}
+
+// end submission
+
+pub struct Solution;
+
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct ListNode {
     pub val: i32,
@@ -13,48 +41,6 @@ impl ListNode {
         }
     }
 }
-
-impl Solution {
-    pub fn merge_two_lists(l1: Option<Box<ListNode>>, l2: Option<Box<ListNode>>) 
-        -> Option<Box<ListNode>> {
-        let mut cur1 = &l1;
-        let mut cur2 = &l2;
-        let mut dummy = Some(Box::new(ListNode::new(0)));
-        let mut tail = &mut dummy;
-        while cur1.is_some() && cur2.is_some() {
-            let mut node = ListNode{val: 0, next: None};
-            if cur1.as_ref().unwrap().val > cur2.as_ref().unwrap().val {
-                node.val = cur2.as_ref().unwrap().val;
-                cur2 = &(cur2.as_ref().unwrap().next);
-            } else {
-                node.val = cur1.as_ref().unwrap().val;
-                cur1 = &(cur1.as_ref().unwrap().next);
-            }
-            tail.as_mut().unwrap().next = Some(Box::new(node));
-            tail = &mut(tail.as_mut().unwrap().next);
-        }
-
-        // 将链表节点ln后面的所有节点复制到tail的后面
-        let f = |mut ln: &Option<Box<ListNode>>, mut tail: &mut Option<Box<ListNode>>| {
-	        while ln.is_some() {
-		        let node = ListNode::new(ln.as_ref().unwrap().val);
-                tail.as_mut().unwrap().next = Some(Box::new(node));
-                tail = &mut(tail.as_mut().unwrap().next);
-                ln = &(ln.as_ref().unwrap().next);
-            }
-        };     
-        
-        if cur1.is_some() {
-            f(cur1, tail);
-        } else if cur2.is_some() {
-            f(cur2, tail);
-        }
-        
-        dummy.unwrap().next
-    }
-}
-
-pub struct Solution;
 
 fn vec_to_list(v: &Vec<i32>) -> Option<Box<ListNode>> {
     let mut head = None;
@@ -72,10 +58,15 @@ fn display(l: Option<Box<ListNode>>) {
         print!("{}, ", head.as_ref().unwrap().val);
         head = &(head.as_ref().unwrap().next);
     }
+    println!("");
 }
 
 fn main() {
     let l = Solution::merge_two_lists(vec_to_list(&vec![1, 3, 5, 7, 9]), 
         vec_to_list(&vec![2, 4, 6, 8, 10]));
+    display(l);
+    
+    let l = Solution::merge_two_lists(vec_to_list(&vec![1, 2, 4]), 
+        vec_to_list(&vec![1, 3, 4, 5, 6]));
     display(l);
 }
