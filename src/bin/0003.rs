@@ -1,41 +1,26 @@
+use std::{collections::HashSet};
+
 impl Solution {
     pub fn length_of_longest_substring(s: String) -> i32 {
-        if s.is_empty() {
-            return 0;
-        }
-        
-        let s = s.as_bytes();
-        
-        // 查找以第i个字符为起始的最长不重复的字符串，返回值：(不重复字符串长度，下一次查询的起始位置)
-        fn get_len(i: usize, s: &[u8]) -> (i32, usize) {
-            let mut len = 0;
-            let mut bits = [0usize; 128]; // 用数组记录每个字符是否出现过
-            let mut to = s.len() - 1;
-            for j in i..s.len() {
-                let index = s[j] as usize;
-                if bits[index] == 0 {
-                    bits[index] = j + 1;
-                    len += 1;
-                } else {
-                    to = bits[index]; // 下一次开始搜索的位置，从与当前重复的字符的下一个字符开始
-                    break;
-                }
+        let mut ret = 0usize;
+        let mut p1 = 0usize; // 双指针
+        let mut p2 = 0usize;
+        let v: Vec<char> = s.chars().collect();
+        let mut set: HashSet<char> = HashSet::new();
+        while p1 < v.len() && p2 < v.len() {
+            while set.contains(&v[p2]) && p1 <= p2 && p1 < v.len() {
+                set.remove(&v[p1]);
+                p1 += 1;
             }
-            (len, to)
-        }
-        
-        let mut ret = 1;
-        let mut i = 0;
-        while i < s.len() - 1 {
-            //println!("i={}", i);
-            let (len, next) = get_len(i, &s);
-            if len > ret {
-                ret = len;
+
+            set.insert(v[p2]);
+            p2 += 1;
+
+            if ret < p2 - p1 {
+                ret = p2 - p1;
             }
-            i = next;
         }
-        
-        ret
+        ret as i32
     }
 }
 
