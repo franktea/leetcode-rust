@@ -1,43 +1,40 @@
-// 计算以第i个字符为中点的字符串的最长回文，从中间往两边检查，复杂度为O(N)。
-// 返回值：(最长回文的起点、最长回文的终点)
-fn longest_of(i: usize, s: &[u8]) -> (usize, usize) {
-    // 先检查奇数长度的字符串，中点只有一个，就是第i个字符
-    let mut ret1 = (i, i);
-    for (f, t) in (0..=i).rev().zip(i..s.len()) {
-        if s[f] != s[t] {
+// 以index为中心的最长回文
+pub fn longest_palindrome_of(index: usize, sv: &Vec<char>) -> std::ops::Range<usize> {
+    // 基数长度的回文
+    let mut r1 = index..(index+1);
+    for (i, j) in (0..=index).rev().zip(index..sv.len()) {
+        if sv[i] != sv[j] {
             break;
         }
-        ret1 = (f, t);
+        r1 = i..(j+1);
     }
-    
-    // 再检查偶数长度的字符串，中点有两个，此处指定为第i、i+1个
-    let mut ret2 = (i, i);
-    for (f, t) in (0..=i).rev().zip(i+1..s.len()) {
-        if s[f] != s[t] {
+
+    // 偶数长度的回文
+    for (i, j) in (0..=index).rev().zip(index+1..sv.len()) {
+        if sv[i] != sv[j] {
             break;
         }
-        ret2 = (f, t);
+
+        if &r1.len() < &(i..j+1).len() {
+            r1 = i..(j+1);
+        }
     }
-    
-    return if ret2.1 - ret2.0 > ret1.1 - ret1.0 { ret2 } else { ret1 };
+
+    r1
 }
 
 impl Solution {
     pub fn longest_palindrome(s: String) -> String {
-        if s.is_empty() {
-            return "".to_string();
-        }
-        
-        let mut range = (0, 0);
-        let s = s.as_bytes();
-        // 遍历每个字符，找出以当前字符为中点的最长回文字符串
+        let s: Vec<char> = s.chars().collect();
+        let mut r = 0usize..0usize;
         for i in 0..s.len() {
-            let r = longest_of(i, &s);
-            if r.1 - r.0 > range.1 - range.0 {
-                range = r;
+            let r2 = longest_palindrome_of(i, &s);
+            if r.len() < r2.len() {
+                r = r2;
             }
         }
-        return std::str::from_utf8(&s[range.0..=range.1]).unwrap().to_string();
+
+        s[r].into_iter().collect::<String>()
     }
 }
 
@@ -47,4 +44,6 @@ pub struct Solution;
 
 fn main() {
     println!("{}", Solution::longest_palindrome("babad".to_string()));
+    println!("{}", Solution::longest_palindrome("cbbd".to_string()));
+    println!("{}", Solution::longest_palindrome("a".to_string()));
 }
