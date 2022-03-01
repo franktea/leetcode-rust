@@ -1,17 +1,19 @@
 impl Solution {
     pub fn reverse(x: i32) -> i32 {
-        let negtive = x != x.abs();
+        let neg = if x < 0 { true } else { false };
         let mut x = x.abs();
-        let mut ret = 0;
+
+        let mut ret = 0i32;
         while x > 0 {
-            if (std::i32::MAX - x % 10) / 10 < ret {
-                return 0;
+            match ret.checked_mul(10).
+                and_then(|val| val.checked_add(x % 10)) {
+                Some(r) => ret = r,
+                None => return 0,
             }
-            ret = ret * 10 + x % 10;
             x /= 10;
         }
-        
-        return if negtive { -ret } else { ret };
+
+        return if neg { -ret } else { ret };
     }
 }
 
