@@ -1,12 +1,10 @@
 impl Solution {
     pub fn convert(s: String, num_rows: i32) -> String {
-        let n = num_rows;
-        let it = (0..n).into_iter().chain((1..=n-2).rev().into_iter());
-        
-        let mut vr: Vec<Vec<char>> = vec![vec![]; n as usize];
-        s.chars().zip(it.cycle()).for_each(|(c, i)| vr[i as usize].push(c));
-        
-        vr.into_iter().flatten().collect()
+        let n = num_rows as usize;
+        let mut rows: Vec<String> = vec!["".to_string(); n];
+        let index = (0..n).chain((1..n-1).rev()); // 行的序列
+        s.chars().zip(index.cycle()).into_iter().for_each(|(c,i)| rows[i].push(c));
+        rows.join("")
     }
 }
 
