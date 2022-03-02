@@ -1,51 +1,46 @@
-enum State {
-    Init,
-    ExpectNumber, // 已经碰到了+或者-，下一个字符必须是数字
-    Number(i32),
-}
-
 impl Solution {
-    pub fn my_atoi(str: String) -> i32 {
-        let mut state = State::Init;
-        let mut neg = 1; // 正负符号，为1或-1，最后的结果乘此数即可
-        for c in str.chars() {
-            match c {
-                ' ' => match state {
-                    State::Init => {},
-                    State::ExpectNumber =>  return 0,
-                    State::Number(n) => return neg * n,
-                }
-                '+' | '-' => match state {
-                    State::Init => {
-                        state = State::ExpectNumber;
-                        if c == '-' {
-                            neg = -1;
-                        }
+    pub fn my_atoi(s: String) -> i32 {
+        let s: Vec<_> = s.chars().skip_while(|c| c == &' ')
+            .enumerate()
+            .take_while(|(i, c)| {
+                match (i, c) {
+                    (0, '+' | '-') => true,
+                    (_, c) if c.is_numeric() => true,
+                    _ => false,
+                }})
+            .map(|(_,c)| c)
+            .collect();
+
+        let mut neg = 1;
+        let mut nums = &s[..];
+        match &s[..] {
+            [] | ['+' | '-'] => return 0,
+            ['+', tail @ ..] => { neg = 1; nums = tail; },
+            ['-', tail @ ..] => { neg = -1; nums = tail; },
+            [tail @ ..] => { nums = tail; },
+        }
+
+        let mut ret = 0i32;
+        for c in nums.iter() {
+            let n = c.to_digit(10).unwrap() as i32;
+            match neg {
+                1 => { 
+                    if (i32::MAX - n) / 10 < ret {
+                        return i32::MAX; 
                     }
-                    State::ExpectNumber => return 0,
-                    State::Number(n) => return neg * n,
-                }                   
-                '0'..='9' => {
-                    let digit = c.to_digit(10).unwrap() as i32;
-                    match state {
-                        State::Init | State::ExpectNumber => state = State::Number(digit),
-                        State::Number(n) => match n.checked_mul(10).and_then(|x|x.checked_add(digit)) {
-                            Some(number) => state = State::Number(number),
-                            _ => return if neg < 0 {std::i32::MIN} else {std::i32::MAX},
-                        }
-                    }                    
-                }
-                _ => match state {
-                    State::Init | State::ExpectNumber => return 0,
-                    State::Number(n) => return neg * n,
-                }                   
+                    ret = ret * 10 + n;
+                    },
+                -1 => {
+                    if (i32::MIN + n) / 10 > ret {
+                        return i32::MIN;
+                    }
+                    ret = ret * 10 - n;
+                },
+                _ => panic!(),
             }
         }
-        
-        match state {
-            State::Number(n) => return neg * n,
-            _ => return 0,
-        }
+
+        ret
     }
 }
 
@@ -57,5 +52,8 @@ fn main() {
     println!("{}", Solution::my_atoi("   -423456".to_string()));
     println!("{}", Solution::my_atoi("4193 with words".to_string()));
     println!("{}", Solution::my_atoi("words and 987".to_string()));
+    println!("{}", Solution::my_atoi("+91283472332".to_string()));
     println!("{}", Solution::my_atoi("-91283472332".to_string()));
+    println!("{}", Solution::my_atoi("+-12".to_string()));
+    println!("{}", Solution::my_atoi("   -42".to_string()));
 }
